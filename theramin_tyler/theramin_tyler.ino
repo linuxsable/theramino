@@ -28,7 +28,7 @@ void loop() {
   cm = microsecondsToCentimeters(duration);
   ft = centimetersToFeet(cm);
   
-  delay(200);
+  delay(150);
   
   Serial.println(duration);
 }

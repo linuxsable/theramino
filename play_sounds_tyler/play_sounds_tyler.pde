@@ -12,6 +12,9 @@ String val;
 String[] lines;
 
 AudioOutput out;
+
+float note;
+float lastNote;
  
 float cMajorKey[] = {
   261.626 / 2, // C
@@ -48,7 +51,14 @@ float cMajorKey[] = {
   349.228 * 4, // F
   391.995 * 4, // G
   440.000 * 4, // A
-  493.883 * 4  // B
+  493.883 * 4,  // B
+  261.626 * 5, // C
+  293.665 * 5, // D
+  329.628 * 5, // E
+  349.228 * 5, // F
+  391.995 * 5, // G
+  440.000 * 5, // A
+  493.883 * 5  // B,
 };
 
 void setup() {
@@ -75,10 +85,11 @@ void draw() {
     
     // Take out some distance to allow lower notes
     distance -= 500;
-//    println("Frequency: " + distance);   
+    // println("Frequency: " + distance);   
     
-    if (distance < 3000 && distance > 0) {
-      float note = 0;
+    if (distance < 4000 && distance > 0) {
+      if (note != 0) lastNote = note;
+      note = 0;
       
       for (int i = 0; i < cMajorKey.length; i++) {
         if (i + 1 >= cMajorKey.length) break;
@@ -88,6 +99,11 @@ void draw() {
           break;
         }
       }
+      
+      // If it's the same note again,
+      // don't add it newly so it just plays
+      // it as one long note.
+      if (lastNote == note) return;
       
       SineWave sine = new SineWave(note, 1, 44100);
       sine.setPan(-0.50);
@@ -101,8 +117,8 @@ void draw() {
       out.addSignal(sine);
       out.addSignal(sineOctave);
       out.addSignal(square);
-    } else if (distance > 3000 || distance < 0) {
-      out.clearSignals();
+    } else if (distance < 0) {
+//      out.clearSignals();
     }
   }
 }
